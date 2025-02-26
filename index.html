@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Perfect Cocktail</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/463f70b152.js" crossorigin="anonymous"></script>
+    <script src="app.js" defer></script>
+</head>
+<body>
+
+    <section id="landing">
+        <nav>
+            <div class="row nav__row">
+                <figure class="logo__wrapper">
+                    <img src="assets/cocktail_logo.png" alt="" class="logo__img" />
+                    <span class="logo__text">CocktailFinder</span>
+                </figure>
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="" class="nav__link">Home</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="" class="nav__link">Find your cocktail</a>
+                    </li>
+                    <li class="nav__item">
+                        <button class="btn btn--primary">Contact</button>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <header>
+            <div class="container">
+             
+                    <h1 class="title">Get a great cocktail idea</h1>
+                    <h2 class="subtitle">It's happy hour somewhere!</h2>
+       
+            </div>
+            
+        </header>
+    </section>
+    <main>
+        <section id="search">
+            <div class="container">
+                <div class="row search__row">
+                    <div class="form__wrapper">
+                        <form action="" class="form">
+                            <div class="form__item">
+                                <input type="text" id="form__search--input" class="input" placeholder="Search by ingredient"/>
+                            </div>
+                            <div class="form__item">
+                                <button class="btn btn__search" onclick="getCockTailByIngredient(event)" type="submit">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                            </div>
+                        </form>
+                       
+                    </div>
+
+                    <i class="fa-solid fa-martini-glass search__loader"></i>
+                    <div class="drinks__list">
+                        <figure class="search__img--wrapper">
+                            <img src="https://www.thecocktaildb.com/images/media/drink/5noda61589575158.jpg" alt="" class="search__img">
+                        </figure>
+                    </div>
+                    
+                   
+                </div>
+            </div>
+        </section> 
+        <section id="drink_recipe">
+            <div class="container">
+                <div class="row recipe__row">
+
+                    <!-- <div class="recipe">
+                        <div class="recipe__info">
+                            <h4 class="recipe__title">Margarita</h4>
+                            <div clas="recipe_description">
+                                <p class="recipe__para">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae consequatur laudantium a eum quae alias corporis explicabo, cupiditate officia tempora!</p>
+                                <h4 class="recipe__subtitle">Ingredients</h4>
+                                <ul class="recipe__ingredients">
+                                    <li class="recipe__ingredient">rum</li>
+                                    <li class="recipe__ingredient">lime</li>
+                                    <li class="recipe__ingredient">simple syrup</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <figure class="recipe__img--wrapper">
+                            <img src="https://www.thecocktaildb.com/images/media/drink/4g6xds1582579703.jpg" alt="" class="recipe__img" />
+                        </figure>
+                    </div> -->
+                   
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    
+</body>
+</html>
