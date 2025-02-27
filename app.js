@@ -19,12 +19,9 @@
 const cockTailEl = document.querySelector('.drinks__list');
 const recipeEl = document.querySelector('.recipe__row');
 
-// Retrieve the existing array or initialize an empty one
 const favoriteDrinksStr = localStorage.getItem('favoriteDrinksArr');
 let favoriteDrinksArr = favoriteDrinksStr ? JSON.parse(favoriteDrinksStr) : [];
 
-// let isLoading = false;
-// isLoading ? document.body.classList += ' loading' : document.body.classList.remove('loading');
 
 function getCockTailByIngredient(event) {
     event.preventDefault();
@@ -53,7 +50,7 @@ async function renderCocktailsByIngredient(ingredient) {
 
 function cockTailCard(cockTail) {
 
-return  `<div class="drink click" id="${cockTail.strDrink.split(' ').join('')}" onclick="getFullRecipe(${cockTail.idDrink})">   
+return  `<div class="drink click" id="drink-${cockTail.idDrink}" onclick="getFullRecipe(${cockTail.idDrink})">   
                 <figure class="drink__img--wrapper">
                     <h3 class="drink__title">${cockTail.strDrink}</h3>
                     <img src="${cockTail.strDrinkThumb}" alt="" class="drink__img">
@@ -72,21 +69,28 @@ async function renderFullRecipe(id) {
     const cockTailData = await response.json();
     const cockTailArr = cockTailData.drinks;
     const thisCocktail = cockTailArr[0];
-    
-    
 
 
     setTimeout(()=> {
         if(cockTailArr !== 'no data found') {
             recipeEl.innerHTML = cockTailArr.map(cockTail => fullRecipeHTML(cockTail)).join(''); 
             getIngredientsList(thisCocktail);  
-            //recipeEl.scrollIntoView();     
+
+            // check here for favorites
+
+            console.log(favoriteDrinksArr);
+            if(favoriteDrinksArr.includes(id)) {
+                console.log(id);
+                document.querySelector('#heart-'+id).classList += ' saved';
+            }
+    
         }
         else {
             recipeEl.innerHTML = 'Your search has no results.  Please try again.'
         }
         document.body.classList.remove('loading');
     }, '500');
+
 } 
 
 function getIngredientsList(cockTailArr) {
@@ -101,11 +105,14 @@ function getIngredientsList(cockTailArr) {
 
 function getFullRecipe(id) {
     renderFullRecipe(id);
+
 }
 
 function toggleFullRecipe(id) {
     let currentRecipe = document.getElementById(id);
-    currentRecipe.scrollIntoView();  
+    if(currentRecipe) {
+        currentRecipe.scrollIntoView(); 
+    } 
     document.querySelector('.recipe').classList += ' recipe__close';
     setTimeout(()=> {
         recipeEl.innerHTML = '';
@@ -128,27 +135,59 @@ function fullRecipeHTML(cockTail) {
                 <figure class="recipe__img--wrapper">
                     <img src="${cockTail.strDrinkThumb}" alt="" class="recipe__img" />
                 </figure>
-                <i class="exit__modal fa-solid fa-x click" onclick="toggleFullRecipe('${cockTail.strDrink.split(' ').join('')}')"></i>
-                <i id="${cockTail.idDrink}-heart" class="favorite fa-solid fa-heart click" onclick="favoriteRecipe(${cockTail.idDrink})"></i>
+                <i class="exit__modal fa-solid fa-x click" onclick="toggleFullRecipe('drink-${cockTail.idDrink}')"></i>
+                <i id="heart-${cockTail.idDrink}" class="favorite fa-solid fa-heart click" onclick="favoriteRecipe(${cockTail.idDrink})"></i>
             </div>`
 }
 
+//NOTE: there is some condition when the heart doesn't stay correctly.  investigate further into this if statement
 function favoriteRecipe(id) {
 
-    console.log(favoriteDrinksArr);
+    let favoriteDrinksStr = localStorage.getItem('favoriteDrinksArr');
+    let favoriteDrinksArr = favoriteDrinksStr ? JSON.parse(favoriteDrinksStr) : [];
+
+    let heart = document.querySelector('#heart-'+id);    
+    //if the item is not in the array, then add it 
+    // console.log(localStorage.getItem('favoriteDrinksArr'));
     if(!favoriteDrinksArr.includes(id)) {
         favoriteDrinksArr.push(id);
-        let heart = document.querySelector('#'+id+'-heart');
-        console.log(heart);
+        console.log('added '+ id + favoriteDrinksArr);
+        heart.classList += ' saved';
+        heart.style.color = 'red';
+        localStorage.setItem('favoriteDrinksArr', JSON.stringify(favoriteDrinksArr));
     }
+    //otherwise remove it from the array
+    else {
+        let updatedFavoriteDrinks = favoriteDrinksArr.filter(item => item !== id);
+        
+        heart.classList.remove('.saved');
+        heart.style.color = 'black';
+        localStorage.setItem('favoriteDrinksArr', JSON.stringify(updatedFavoriteDrinks));
 
-    
+        console.log('removed '+ id + favoriteDrinksArr);
+        //if on favorites page, remove the drink when unfavorited
+        if(document.getElementById('favorites')) {
+            //remove this drink if it's there
+            drinkToBeRemoved = document.querySelector('#drink-'+id);
+            if(drinkToBeRemoved) {
+                document.querySelector('#drink-'+id).remove();
+            }
+
+            
+        }
+    }    
     // Save the updated array
-    localStorage.setItem('favoriteDrinksArr', JSON.stringify(favoriteDrinksArr));
+    
+    console.log(localStorage.getItem('favoriteDrinksArr'));
 
 
     // let updatedArr = localStorage.getItem('favoriteDrinksArr'); //this is a string
     // let convertToArr = updatedArr ? JSON.parse(updatedArr) : [];  //now it is an array
     // console.log(typeof convertToArr, convertToArr);
+
+
+    // Retrieve the existing array or initialize an empty one
+    // const favoriteDrinksStr = localStorage.getItem('favoriteDrinksArr');
+    // let favoriteDrinksArr = favoriteDrinksStr ? JSON.parse(favoriteDrinksStr) : [];
     
 }
