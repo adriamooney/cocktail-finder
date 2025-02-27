@@ -18,6 +18,11 @@
 
 const cockTailEl = document.querySelector('.drinks__list');
 const recipeEl = document.querySelector('.recipe__row');
+
+// Retrieve the existing array or initialize an empty one
+const favoriteDrinksStr = localStorage.getItem('favoriteDrinksArr');
+let favoriteDrinksArr = favoriteDrinksStr ? JSON.parse(favoriteDrinksStr) : [];
+
 // let isLoading = false;
 // isLoading ? document.body.classList += ' loading' : document.body.classList.remove('loading');
 
@@ -48,12 +53,12 @@ async function renderCocktailsByIngredient(ingredient) {
 
 function cockTailCard(cockTail) {
 
-return  `<div class="drink" id="${cockTail.strDrink.split(' ').join('')}">   
+return  `<div class="drink click" id="${cockTail.strDrink.split(' ').join('')}" onclick="getFullRecipe(${cockTail.idDrink})">   
                 <figure class="drink__img--wrapper">
                     <h3 class="drink__title">${cockTail.strDrink}</h3>
                     <img src="${cockTail.strDrinkThumb}" alt="" class="drink__img">
-                    <div class="drink__overlay">
-                        <button class="btn" onclick="getFullRecipe(${cockTail.idDrink})" class="drink__recipe--link"><i class="fa-solid fa-martini-glass"></i> Full Recipe</button>
+                    <div class="drink__overlay" >
+                        <button class="btn" class="drink__recipe--link"><i class="fa-solid fa-martini-glass"></i> Full Recipe</button>
                     </div>
                 </figure>
             </div>`
@@ -75,7 +80,7 @@ async function renderFullRecipe(id) {
         if(cockTailArr !== 'no data found') {
             recipeEl.innerHTML = cockTailArr.map(cockTail => fullRecipeHTML(cockTail)).join(''); 
             getIngredientsList(thisCocktail);  
-            recipeEl.scrollIntoView();     
+            //recipeEl.scrollIntoView();     
         }
         else {
             recipeEl.innerHTML = 'Your search has no results.  Please try again.'
@@ -88,7 +93,6 @@ function getIngredientsList(cockTailArr) {
     for(let i=1; i<=15; i++) {
         
         if(cockTailArr['strIngredient' + i]) {
-            console.log(cockTailArr['strIngredient' + i]);
             document.querySelector('.recipe__ingredients').innerHTML += `<li class="recipe__ingredient">${cockTailArr['strIngredient' + i]}</li>`;
         }
         
@@ -99,9 +103,19 @@ function getFullRecipe(id) {
     renderFullRecipe(id);
 }
 
+function toggleFullRecipe(id) {
+    let currentRecipe = document.getElementById(id);
+    currentRecipe.scrollIntoView();  
+    document.querySelector('.recipe').classList += ' recipe__close';
+    setTimeout(()=> {
+        recipeEl.innerHTML = '';
+    }, '300');
+   
+}
+
 function fullRecipeHTML(cockTail) {
 
-    return ` <div class="recipe">
+    return ` <div class="recipe" id="${cockTail.idDrink}">
                 <div class="recipe__info">
                     <h4 class="recipe__title">${cockTail.strDrink}</h4>
                     <div clas="recipe_description">
@@ -114,10 +128,27 @@ function fullRecipeHTML(cockTail) {
                 <figure class="recipe__img--wrapper">
                     <img src="${cockTail.strDrinkThumb}" alt="" class="recipe__img" />
                 </figure>
-                <a class="back_to_top click" href="#${cockTail.strDrink.split(' ').join('')}"><i class="fa-solid fa-arrow-up"></i></a>
+                <i class="exit__modal fa-solid fa-x click" onclick="toggleFullRecipe('${cockTail.strDrink.split(' ').join('')}')"></i>
+                <i id="${cockTail.idDrink}-heart" class="favorite fa-solid fa-heart click" onclick="favoriteRecipe(${cockTail.idDrink})"></i>
             </div>`
 }
 
+function favoriteRecipe(id) {
 
-// strIngredient1 - strIngredient15  (null if none)
-// strInstructions
+    console.log(favoriteDrinksArr);
+    if(!favoriteDrinksArr.includes(id)) {
+        favoriteDrinksArr.push(id);
+        let heart = document.querySelector('#'+id+'-heart');
+        console.log(heart);
+    }
+
+    
+    // Save the updated array
+    localStorage.setItem('favoriteDrinksArr', JSON.stringify(favoriteDrinksArr));
+
+
+    // let updatedArr = localStorage.getItem('favoriteDrinksArr'); //this is a string
+    // let convertToArr = updatedArr ? JSON.parse(updatedArr) : [];  //now it is an array
+    // console.log(typeof convertToArr, convertToArr);
+    
+}
