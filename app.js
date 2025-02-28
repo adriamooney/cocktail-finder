@@ -69,18 +69,18 @@ async function renderFullRecipe(id) {
     const cockTailData = await response.json();
     const cockTailArr = cockTailData.drinks;
     const thisCocktail = cockTailArr[0];
+    
 
+    let currentFavoriteStr = localStorage.getItem('favoriteDrinksArr');
+    let currentFavoriteArr = currentFavoriteStr ? JSON.parse(currentFavoriteStr) : [];
 
     setTimeout(()=> {
         if(cockTailArr !== 'no data found') {
             recipeEl.innerHTML = cockTailArr.map(cockTail => fullRecipeHTML(cockTail)).join(''); 
             getIngredientsList(thisCocktail);  
 
-            // check here for favorites
-
-            console.log(favoriteDrinksArr);
-            if(favoriteDrinksArr.includes(id)) {
-                console.log(id);
+            // check here for favorites, if it is in the array, add the saved class
+            if(currentFavoriteArr.includes(id)) {
                 document.querySelector('#heart-'+id).classList += ' saved';
             }
     
@@ -140,21 +140,18 @@ function fullRecipeHTML(cockTail) {
             </div>`
 }
 
-//NOTE: there is some condition when the heart doesn't stay correctly.  investigate further into this if statement
 function favoriteRecipe(id) {
 
-    let favoriteDrinksStr = localStorage.getItem('favoriteDrinksArr');
-    let favoriteDrinksArr = favoriteDrinksStr ? JSON.parse(favoriteDrinksStr) : [];
+    let currentFavoriteStr = localStorage.getItem('favoriteDrinksArr');
+    let currentFavoriteArr = currentFavoriteStr ? JSON.parse(currentFavoriteStr) : [];
 
     let heart = document.querySelector('#heart-'+id);    
     //if the item is not in the array, then add it 
-    // console.log(localStorage.getItem('favoriteDrinksArr'));
-    if(!favoriteDrinksArr.includes(id)) {
-        favoriteDrinksArr.push(id);
-        console.log('added '+ id + favoriteDrinksArr);
+    if(!currentFavoriteArr.includes(id)) {
+        currentFavoriteArr.push(id);
         heart.classList += ' saved';
         heart.style.color = 'red';
-        localStorage.setItem('favoriteDrinksArr', JSON.stringify(favoriteDrinksArr));
+        localStorage.setItem('favoriteDrinksArr', JSON.stringify(currentFavoriteArr));
     }
     //otherwise remove it from the array
     else {
@@ -164,7 +161,6 @@ function favoriteRecipe(id) {
         heart.style.color = 'black';
         localStorage.setItem('favoriteDrinksArr', JSON.stringify(updatedFavoriteDrinks));
 
-        console.log('removed '+ id + favoriteDrinksArr);
         //if on favorites page, remove the drink when unfavorited
         if(document.getElementById('favorites')) {
             //remove this drink if it's there
@@ -176,18 +172,6 @@ function favoriteRecipe(id) {
             
         }
     }    
-    // Save the updated array
-    
-    console.log(localStorage.getItem('favoriteDrinksArr'));
 
-
-    // let updatedArr = localStorage.getItem('favoriteDrinksArr'); //this is a string
-    // let convertToArr = updatedArr ? JSON.parse(updatedArr) : [];  //now it is an array
-    // console.log(typeof convertToArr, convertToArr);
-
-
-    // Retrieve the existing array or initialize an empty one
-    // const favoriteDrinksStr = localStorage.getItem('favoriteDrinksArr');
-    // let favoriteDrinksArr = favoriteDrinksStr ? JSON.parse(favoriteDrinksStr) : [];
     
 }

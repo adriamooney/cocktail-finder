@@ -1,6 +1,3 @@
-// const favoriteDrinksStr = localStorage.getItem('favoriteDrinksArr');
-// let favoriteDrinksArr = favoriteDrinksStr ? JSON.parse(favoriteDrinksStr) : [];
-console.log(typeof(favoriteDrinksArr), favoriteDrinksArr);
 // Lookup full cocktail details by id
 // www.thecocktaildb.com/api/json/v1/1/lookup.php?i=11007
 
@@ -20,7 +17,7 @@ async function renderCocktailsById(id) {
     }, '500');
     
 }
-console.log(favoriteDrinksArr);
+
 for (let i=0; i<favoriteDrinksArr.length; i++) {
     renderCocktailsById(favoriteDrinksArr[i]);
 }
